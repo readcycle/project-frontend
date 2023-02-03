@@ -6,7 +6,7 @@ export default function EditProfile() {
 		<>
 			<StatusBar style="auto" />
 			<View className="items-center py-4 px-8">
-					<View>
+					<View className="items-center">
 						<View className="h-28 w-28 items-center rounded-circular border-2 border-dotted">
 							<Image
 								source={require("../../assets/portrait-example.jpg")}
@@ -21,23 +21,27 @@ export default function EditProfile() {
 					</View>
 				<View className="w-full items-start my-10">
 					<View className="flex-row justify-between w-full border-b-1 border-gray-300 py-6 px-2">
-						<Text>Name</Text>
+						<Text className="font-bold">Name</Text>
 						<Text>Chris Pratt</Text>
 					</View>
 					<View className="flex-row justify-between w-full border-b-1 border-gray-300 py-6 px-2">
-						<Text>Location</Text>
+						<Text className="font-bold">Location</Text>
 						<Text>Jakarta</Text>
 					</View>
 					<View className="flex-row justify-between w-full border-b-1 border-gray-300 py-6 px-2">
-						<Text>Favorite genre</Text>
+						<Text className="font-bold">Phone Number</Text>
+						<Text>08121234567</Text>
+					</View>
+					<View className="flex-row justify-between w-full border-b-1 border-gray-300 py-6 px-2">
+						<Text className="font-bold">Favorite genre</Text>
 						<Text>Fantasy</Text>
 					</View>
 					<View className="flex-row justify-between w-full border-b-1 border-gray-300 py-6 px-2">
-						<Text>Favorite book</Text>
+						<Text className="font-bold">Favorite book</Text>
 						<Text>The Hunger Games</Text>
 					</View>
 					<View className="flex-row justify-between w-full border-b-1 border-gray-300 py-6 px-2">
-						<Text>Location</Text>
+						<Text className="font-bold">Location</Text>
 						<Text>Jakarta</Text>
 					</View>
 				</View>

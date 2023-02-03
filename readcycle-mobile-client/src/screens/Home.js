@@ -6,6 +6,8 @@ import {
 	Image,
 	TextInput,
 	FlatList,
+    ScrollView,
+    TouchableOpacity
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import PostCard from "../components/PostCard";
@@ -40,10 +42,13 @@ export default function Home() {
 			<View className="w-full mt-10 px-8">
 				<Text className="text-left text-lg font-semibold">Books Near You</Text>
 			</View>
-			<View className="w-full mt-4 px-8 flex-row">
+			<View className="w-full mt-4 px-8">
 				<PostCard />
 				<PostCard />
 			</View>
+            <TouchableOpacity className='absolute w-16 h-16 bottom-44 right-8 items-center'>
+                <Image source={require('../../assets/add-button-2.jpg')} className="w-16 h-16 object-contain"/>
+            </TouchableOpacity>
             
 		</View>
 	);

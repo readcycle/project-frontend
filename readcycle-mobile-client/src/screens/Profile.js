@@ -1,6 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import { Text, View, Image, Button, TouchableOpacity } from "react-native";
 import PostCard from "../components/PostCard";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 export default function Profile({ navigation }) {
 	return (
@@ -38,8 +39,29 @@ export default function Profile({ navigation }) {
 				</View>
 				<View className="w-full mt-4 flex-row">
 					<PostCard />
-					<PostCard />
+					{/* <PostCard /> */}
 				</View>
+
+				{/* <View className="w-full mt-4">
+					<View className="flex-row justify-between border-b-1 py-2 border-gray-300">
+						<Text className="w-40 text-sm">The Hunger Games</Text>
+						<Text className="w-10 text-sm">Active</Text>
+						<TouchableOpacity>
+							<Ionicons
+                            name="trash-outline"
+                            size="16" />
+						</TouchableOpacity>
+					</View>
+                    <View className="flex-row justify-between border-b-1 py-2 border-gray-300">
+						<Text className="w-40 text-sm">The Hunger Games</Text>
+						<Text className="w-10 text-sm">Active</Text>
+						<TouchableOpacity>
+							<Ionicons
+                            name="trash-outline"
+                            size="16" />
+						</TouchableOpacity>
+					</View>
+				</View> */}
 			</View>
 		</>
 	);

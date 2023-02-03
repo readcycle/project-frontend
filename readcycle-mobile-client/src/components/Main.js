@@ -8,7 +8,7 @@ import { StyleSheet, Button, View } from "react-native";
 
 const Tab = createBottomTabNavigator();
 
-export default function Tabs() {
+export default function Main() {
 	return (
 		<Tab.Navigator
 			screenOptions={({ route }) => ({

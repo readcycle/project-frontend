@@ -3,17 +3,18 @@ import { Text, View, Image } from "react-native";
 
 export default function PostCard() {
 	return (
-		<View className="h-44 w-36 mr-8">
-			<View className="bg-gray-200 w-full h-full rounded-3xl">
-				<View className="h-32 w-3/5 mx-auto my-auto px-0.5 py-0.5 bg-white">
-					<Image
-						source={require("../../assets/post-pic.jpg")}
-						className="h-full w-full overflow-hidden"
-					/>
-				</View>
+		<View className="h-32 flex-row justify-start w-full mr-8 mb-4 shadow-2xl px-4 bg-white py-4 rounded-lg">
+			<View className="w-1/3">
+				<Image
+					source={require("../../assets/post-pic.jpg")}
+					className="h-full w-full object-contain"
+				/>
 			</View>
-			<Text className="mt-3 font-bold">Book Title</Text>
-			<Text className="mt-1 text-gray-500 text-xs">Book Author</Text>
+			<View className="ml-10">
+				<Text className="mt-3 font-bold">The Whistler</Text>
+				<Text className="mt-1 text-gray-500 text-xs">John Grisham</Text>
+                <Text className="mt-4 text-xs">Posted by Albertus</Text>
+			</View>
 		</View>
 	);
 }

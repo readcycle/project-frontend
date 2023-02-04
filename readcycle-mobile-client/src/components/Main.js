@@ -21,7 +21,7 @@ export default function Main() {
 					elevation: 0,
 					borderRadius: 15,
 					height: 90,
-                    padding: 16,
+					padding: 16,
 					...styles.shadow,
 				},
 				tabBarIcon: ({ focused, color, size }) => {
@@ -31,8 +31,8 @@ export default function Main() {
 					} else if (route.name == "Profile") {
 						iconName = "person-outline";
 					} else if (route.name == "Chat") {
-                        iconName = "chatbubble-ellipses-outline"
-                    }
+						iconName = "chatbubble-ellipses-outline";
+					}
 
 					return (
 						<View className="">
@@ -56,13 +56,13 @@ export default function Main() {
 			<Tab.Screen
 				name="Profile"
 				component={Profile}
-                // options={{ headerShown: false }}
+				options={{ headerShown: false }}
 			/>
 
 			<Tab.Screen
 				name="Chat"
 				component={Chat}
-                // options={{ headerShown: false }}
+				// options={{ headerShown: false }}
 			/>
 		</Tab.Navigator>
 	);

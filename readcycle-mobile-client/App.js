@@ -8,27 +8,44 @@ import Register from "./src/screens/Register";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import EditProfile from "./src/screens/EditProfile";
 import Login from "./src/screens/Login";
+import { MenuProvider } from "react-native-popup-menu";
+import PostDetail from "./src/components/PostDetail";
+import SearchModal from "./src/modals/SearchModal";
+import AddPost from "./src/modals/AddPost";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
 	return (
-    // <Register />
-    // <LandingPage />
-    // <Login />
-		<NavigationContainer>
-			<Stack.Navigator>
-				<Stack.Screen
-					name="Main"
-					component={Main}
-					options={{ headerShown: false }}
-				/>
-				<Stack.Screen
-					name="EditProfile"
-					component={EditProfile}
-          options={{title: 'Edit Profile'}}
-				/>
-			</Stack.Navigator>
-		</NavigationContainer>
+		// <Register />
+		// <LandingPage />
+		// <Login />
+		<MenuProvider>
+			<NavigationContainer>
+				<Stack.Navigator>
+					<Stack.Screen
+						name="Main"
+						component={Main}
+						options={{ headerShown: false }}
+					/>
+					<Stack.Screen
+						name="EditProfile"
+						component={EditProfile}
+						options={{ title: "Edit Profile" }}
+					/>
+
+					<Stack.Screen
+						name="PostDetail"
+						component={PostDetail}
+						options={{ title: "Post Detail" }}
+					/>
+					<Stack.Screen
+						name="AddPost"
+						component={AddPost}
+						options={{ title: "Add New Post", presentation: "modal" }}
+					/>
+				</Stack.Navigator>
+			</NavigationContainer>
+		</MenuProvider>
 	);
 }

@@ -5,9 +5,10 @@ module.exports = {
 		extend: {
 			colors: {
 				navy: "#1d3557",
+				darkerNavy: "#142e3d",
 			},
 			borderWidth: {
-				'1': '1px'
+				1: "1px",
 			},
 			borderRadius: {
 				circular: "50%",

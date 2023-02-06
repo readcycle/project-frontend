@@ -12,6 +12,8 @@ import { MenuProvider } from "react-native-popup-menu";
 import PostDetail from "./src/components/PostDetail";
 import SearchModal from "./src/modals/SearchModal";
 import AddPost from "./src/modals/AddPost";
+import AddBid from "./src/modals/AddBid";
+import BidList from "./src/screens/BidList";
 
 const Stack = createNativeStackNavigator();
 
@@ -43,6 +45,16 @@ export default function App() {
 						name="AddPost"
 						component={AddPost}
 						options={{ title: "Add New Post", presentation: "modal" }}
+					/>
+					<Stack.Screen
+						name="AddBid"
+						component={AddBid}
+						options={{ title: "Add New Bid", presentation: "modal" }}
+					/>
+					<Stack.Screen
+						name="BidList"
+						component={BidList}
+						options={{ title: "Bid List" }}
 					/>
 				</Stack.Navigator>
 			</NavigationContainer>

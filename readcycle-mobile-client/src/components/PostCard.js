@@ -4,7 +4,7 @@ import { Text, View, Image, TouchableOpacity, Button } from "react-native";
 export default function PostCard({ navigation }) {
 	return (
 		<TouchableOpacity
-			className="h-28 flex-row justify-start w-full mr-8 mb-4 shadow-2xl px-4 bg-white py-2 rounded-lg"
+			className="h-28 flex-row justify-start w-full mb-4 shadow-2xl px-4 bg-white py-2 rounded-lg"
 			onPress={() => navigation.push("PostDetail")}
 		>
 			<View className="w-1/3">

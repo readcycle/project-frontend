@@ -1,3 +1,4 @@
+import { StatusBar } from "expo-status-bar";
 import {
 	Text,
 	View,
@@ -9,7 +10,7 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import { useState } from "react";
 
-export default function AddPost() {
+export default function AddBid() {
 	const [image, setImage] = useState(null);
 	const handleChoosePhoto = async () => {
 		let result = await ImagePicker.launchImageLibraryAsync({
@@ -54,13 +55,6 @@ export default function AddPost() {
 						numberOfLines={4}
 						className="my-2 h-20 px-4 rounded-lg border-gray-300 border-1"
 						placeholder="Book condition"
-					></TextInput>
-				</View>
-                <View className="mt-2">
-					<Text className="font-semibold">A book in your wishlist: </Text>
-					<TextInput
-						className="my-2 h-10 px-4 rounded-lg border-gray-300 border-1"
-						placeholder="Book title/genre"
 					></TextInput>
 				</View>
 				<View className="mt-8 mx-auto items-center">

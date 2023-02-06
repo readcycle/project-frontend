@@ -1,6 +1,6 @@
 import { Text, View, ScrollView, Image, TouchableOpacity } from "react-native";
 
-export default function PostDetail() {
+export default function PostDetail({ navigation }) {
 	return (
 		<>
 			<ScrollView
@@ -51,12 +51,18 @@ export default function PostDetail() {
 				</View>
 			</ScrollView>
 			<View className="absolute bottom-4 w-full bg-white h-16 flex-row items-center justify-around">
-				<View className="border-1 border-navy w-1/4 items-center py-2 px-4 h-3/5 rounded-lg bg-navy">
+				<TouchableOpacity
+					className="border-1 border-navy w-1/4 items-center py-2 px-4 h-3/5 rounded-lg bg-navy"
+					onPress={() => navigation.navigate("AddBid")}
+				>
 					<Text className="text-white font-semibold">Bid</Text>
-				</View>
-                <View className="border-1 border-navy w-1/4 h-3/5 py-2 px-4 items-center rounded-lg">
+				</TouchableOpacity>
+				<TouchableOpacity
+					className="border-1 border-navy w-1/4 h-3/5 py-2 px-4 items-center rounded-lg"
+					onPress={() => navigation.navigate("BidList")}
+				>
 					<Text className="font-semibold">See bids</Text>
-				</View>
+				</TouchableOpacity>
 			</View>
 		</>
 	);

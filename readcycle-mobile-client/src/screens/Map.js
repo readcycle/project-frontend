@@ -1,16 +1,20 @@
 import React, { useState } from "react";
 import MapView from "react-native-maps";
 import { Marker, Callout, Circle } from "react-native-maps";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+// import GLOBAL from "../GLOBAL";
 
-export default function Map() {
+export default function Map({ func, navigation }) {
 	const [pin, setPin] = useState({
 		latitude: 37.78825,
 		longitude: -122.4324,
 	});
+	function submitLocation() {
+        // GLOBAL.location.latitude="abd"
+	}
 	return (
-		<View style={{ marginTop: 50, flex: 1 }}>
+		<View style={styles.container}>
 			<GooglePlacesAutocomplete
 				placeholder="Search"
 				fetchDetails={true}
@@ -59,7 +63,7 @@ export default function Map() {
 					coordinate={pin}
 					draggable={true}
 					onDragStart={(e) => {
-						console.log("Drag start", e.nativeEvent.coordinates);
+						// console.log("Drag start", e.nativeEvent.coordinates);
 					}}
 					onDragEnd={(e) => {
 						setPin({
@@ -68,8 +72,15 @@ export default function Map() {
 						});
 					}}
 				>
-					<Callout>
-						<Text>{pin.latitude}</Text>
+					<Callout
+						onPress={() => {
+							submitLocation();
+                            navigation.navigate('Register', {
+                                location: pin
+                            })
+						}}
+					>
+						<Text>Set Location</Text>
 					</Callout>
 				</Marker>
 				<Circle
@@ -83,6 +94,7 @@ export default function Map() {
 
 const styles = StyleSheet.create({
 	container: {
+		flex: 1,
 		flex: 1,
 	},
 	map: {

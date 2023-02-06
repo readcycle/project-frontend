@@ -1,9 +1,10 @@
 import { Text, View, TextInput, TouchableOpacity, Image } from "react-native";
 import { useState } from "react";
 import * as ImagePicker from "expo-image-picker";
-import Map from "./Map";
+// import GLOBAL from "../GLOBAL";
 
-export default function Register() {
+export default function Register({ route, navigation }) {
+	const location = route.params.location
 	const [image, setImage] = useState(null);
 	const handleChoosePhoto = async () => {
 		let result = await ImagePicker.launchImageLibraryAsync({
@@ -17,13 +18,13 @@ export default function Register() {
 		}
 	};
 	return (
-		<View className="mx-auto px-8 pt-20 w-screen">
+		<View className="mx-auto px-8 w-screen">
 			<View className="w-full">
 				<Text className="font-bold text-2xl tracking-wider text-center text-navy mt-10">
 					Get Started with Readcycle
 				</Text>
 			</View>
-			<View className="mt-20">
+			<View className="mt-10">
 				<View className="mt-2">
 					<Text className="font-semibold">Full name: </Text>
 					<TextInput
@@ -64,6 +65,16 @@ export default function Register() {
 						<Text>Choose picture</Text>
 					</TouchableOpacity>
 				</View>
+				<TouchableOpacity
+					className="mt-4 border-1 border-navy px-2 py-1"
+					onPress={() => {
+						navigation.push("Map");
+					}}
+				>
+					<Text>Set Location</Text>
+				</TouchableOpacity>
+				<Text>{JSON.stringify(location)}</Text>
+
 				{/* <View className="mt-2">
 					<Text className="font-semibold">Phone Number: </Text>
 					<TextInput

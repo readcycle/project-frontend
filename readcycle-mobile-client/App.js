@@ -14,50 +14,52 @@ import SearchModal from "./src/modals/SearchModal";
 import AddPost from "./src/modals/AddPost";
 import AddBid from "./src/modals/AddBid";
 import BidList from "./src/screens/BidList";
+import Map from "./src/screens/Map";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
 	return (
+    <Map />
 		// <Register />
 		// <LandingPage />
 		// <Login />
-		<MenuProvider>
-			<NavigationContainer>
-				<Stack.Navigator>
-					<Stack.Screen
-						name="Main"
-						component={Main}
-						options={{ headerShown: false }}
-					/>
-					<Stack.Screen
-						name="EditProfile"
-						component={EditProfile}
-						options={{ title: "Edit Profile" }}
-					/>
+		// <MenuProvider>
+		// 	<NavigationContainer>
+		// 		<Stack.Navigator>
+		// 			<Stack.Screen
+		// 				name="Main"
+		// 				component={Main}
+		// 				options={{ headerShown: false }}
+		// 			/>
+		// 			<Stack.Screen
+		// 				name="EditProfile"
+		// 				component={EditProfile}
+		// 				options={{ title: "Edit Profile" }}
+		// 			/>
 
-					<Stack.Screen
-						name="PostDetail"
-						component={PostDetail}
-						options={{ title: "Post Detail" }}
-					/>
-					<Stack.Screen
-						name="AddPost"
-						component={AddPost}
-						options={{ title: "Add New Post", presentation: "modal" }}
-					/>
-					<Stack.Screen
-						name="AddBid"
-						component={AddBid}
-						options={{ title: "Add New Bid", presentation: "modal" }}
-					/>
-					<Stack.Screen
-						name="BidList"
-						component={BidList}
-						options={{ title: "Bid List" }}
-					/>
-				</Stack.Navigator>
-			</NavigationContainer>
-		</MenuProvider>
+		// 			<Stack.Screen
+		// 				name="PostDetail"
+		// 				component={PostDetail}
+		// 				options={{ title: "Post Detail" }}
+		// 			/>
+		// 			<Stack.Screen
+		// 				name="AddPost"
+		// 				component={AddPost}
+		// 				options={{ title: "Add New Post", presentation: "modal" }}
+		// 			/>
+		// 			<Stack.Screen
+		// 				name="AddBid"
+		// 				component={AddBid}
+		// 				options={{ title: "Add New Bid", presentation: "modal" }}
+		// 			/>
+		// 			<Stack.Screen
+		// 				name="BidList"
+		// 				component={BidList}
+		// 				options={{ title: "Bid List" }}
+		// 			/>
+		// 		</Stack.Navigator>
+		// 	</NavigationContainer>
+		// </MenuProvider>
 	);
 }

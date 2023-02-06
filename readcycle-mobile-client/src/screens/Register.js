@@ -1,6 +1,7 @@
 import { Text, View, TextInput, TouchableOpacity, Image } from "react-native";
 import { useState } from "react";
 import * as ImagePicker from "expo-image-picker";
+import Map from "./Map";
 
 export default function Register() {
 	const [image, setImage] = useState(null);
@@ -56,7 +57,10 @@ export default function Register() {
 							className="h-full w-full rounded-circular"
 						/>
 					</View>
-					<TouchableOpacity className="mt-4 border-1 border-navy px-2 py-1" onPress={handleChoosePhoto}>
+					<TouchableOpacity
+						className="mt-4 border-1 border-navy px-2 py-1"
+						onPress={handleChoosePhoto}
+					>
 						<Text>Choose picture</Text>
 					</TouchableOpacity>
 				</View>

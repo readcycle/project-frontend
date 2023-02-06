@@ -4,7 +4,7 @@ import * as ImagePicker from "expo-image-picker";
 // import GLOBAL from "../GLOBAL";
 
 export default function Register({ route, navigation }) {
-	const location = route.params.location
+	// const location = route.params.location
 	const [image, setImage] = useState(null);
 	const handleChoosePhoto = async () => {
 		let result = await ImagePicker.launchImageLibraryAsync({
@@ -73,7 +73,7 @@ export default function Register({ route, navigation }) {
 				>
 					<Text>Set Location</Text>
 				</TouchableOpacity>
-				<Text>{JSON.stringify(location)}</Text>
+				{/* <Text>{JSON.stringify(location)}</Text> */}
 
 				{/* <View className="mt-2">
 					<Text className="font-semibold">Phone Number: </Text>

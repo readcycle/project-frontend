@@ -11,13 +11,18 @@ export default function TableReports(props) {
                 <div className="flex items-center gap-2">No</div>
               </th>
               <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
-                <div className="flex items-center gap-2">Report</div>
+                <div className="flex items-center gap-2">Title</div>
+              </th>
+              <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
+                <div className="flex items-center gap-2">Description</div>
               </th>
               <th className="whitespace-nowrap px-4 py-2 text-center font-medium text-gray-900">Action</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            <TableRowReports />
+            {props.reports.map((report, index) => {
+              return <TableRowReports key={index} index={index} report={report} />;
+            })}
           </tbody>
         </table>
       </div>

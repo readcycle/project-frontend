@@ -1,39 +1,42 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { swalConfirmDelete, swalError, swalSuccess } from "../helpers/swal";
+import { useDispatch, useSelector } from "react-redux";
+// import { swalConfirmDelete, swalError, swalSuccess } from "../helpers/swal";
 import React, { useState } from "react";
+import { banUser, fetchUsers } from "../stores/actions/userlist/actionCreator";
 
 export default function TableRowProducts(props) {
-  const [banStatus, setBanStatus] = useState("not_ban");
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const handleBanClick = (event) => {
-    event.preventDefault();
-    setBanStatus("ban");
-  };
-
-  const handleUnbanClick = (event) => {
-    event.preventDefault();
-    setBanStatus("not_ban");
+  const handleBanClick = (id) => {
+    dispatch(banUser(id))
+      .then(() => {
+        return dispatch(fetchUsers());
+      })
+      .then(() => {
+        navigate("/users");
+      });
   };
 
   return (
     <>
       <tr>
-        <td className="whitespace-nowrap px-4 py-2 text-gray-700">1</td>
-        <td className="whitespace-nowrap px-4 py-2 text-gray-700">Chris Pratt</td>
+        <td className="whitespace-nowrap px-4 py-2 text-gray-700">{props.index + 1}</td>
+        <td className="whitespace-nowrap px-4 py-2 text-gray-700">{props.user.fullname}</td>
+        <td className="whitespace-nowrap px-4 py-2 text-gray-700">{props.user.email}</td>
 
         <th className="whitespace-nowrap px-4 py-2 text-gray-700">
-          {banStatus === "not_ban" ? (
+          {!props.user.isBanned ? (
             <button
               className="mt-3 p-3 rounded-md border border-gray-300 bg-gray-50 text-sm text-gray-700 shadow-sm mb-3 text-center"
-              onClick={handleBanClick}
+              onClick={() => handleBanClick(props.user.id)}
             >
               BAN
             </button>
           ) : (
             <button
               className="mt-3 p-3 rounded-md border border-gray-300 bg-gray-50 text-sm text-gray-700 shadow-sm mb-3 text-center"
-              onClick={handleUnbanClick}
+              onClick={() => handleBanClick(props.user.id)}
             >
               UNBAN
             </button>

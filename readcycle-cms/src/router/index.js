@@ -10,13 +10,13 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Root />,
-    // loader: () => {
-    //   const token = localStorage.getItem("access_token");
-    //   if (!token) {
-    //     return redirect("/login");
-    //   }
-    //   return token;
-    // },
+    loader: () => {
+      const token = localStorage.getItem("access_token");
+      if (!token) {
+        return redirect("/login");
+      }
+      return token;
+    },
     children: [
       {
         path: "",
@@ -36,17 +36,17 @@ const router = createBrowserRouter([
       },
     ],
   },
-  // {
-  //   path: "/login",
-  //   element: <LoginPage />,
-  //   loader: () => {
-  //     const token = localStorage.getItem("access_token");
-  //     if (token) {
-  //       return redirect("/products");
-  //     }
-  //     return token;
-  //   },
-  // },
+  {
+    path: "/login",
+    element: <LoginPage />,
+    loader: () => {
+      const token = localStorage.getItem("access_token");
+      if (token) {
+        return redirect("/products");
+      }
+      return token;
+    },
+  },
 ]);
 
 export default router;

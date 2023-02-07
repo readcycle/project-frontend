@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-// import { swalConfirmDelete, swalError, swalSuccess } from "../helpers/swal";
+import { swalSuccess } from "../helpers/swal";
 import React, { useState } from "react";
 import { banUser, fetchUsers } from "../stores/actions/userlist/actionCreator";
 
@@ -15,6 +15,7 @@ export default function TableRowProducts(props) {
       })
       .then(() => {
         navigate("/users");
+        swalSuccess(`Success update Ban status of user : ${props.user.fullname}`);
       });
   };
 

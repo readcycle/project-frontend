@@ -11,7 +11,7 @@ export default function Map({ func, navigation }) {
 		longitude: -122.4324,
 	});
 	function submitLocation() {
-        // GLOBAL.location.latitude="abd"
+		// GLOBAL.location.latitude="abd"
 	}
 	return (
 		<View style={styles.container}>
@@ -75,9 +75,12 @@ export default function Map({ func, navigation }) {
 					<Callout
 						onPress={() => {
 							submitLocation();
-                            navigation.navigate('Register', {
-                                location: pin
-                            })
+							// navigation.navigate('Register', {
+							//     location: pin
+							// })
+							navigation.goBack({
+								location: pin,
+							});
 						}}
 					>
 						<Text>Set Location</Text>

@@ -1,9 +1,7 @@
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-// import { swalConfirmDelete, swalError, swalSuccess } from "../helpers/swal";
+import { swalSuccess } from "../helpers/swal";
 import React, { useState } from "react";
-// import { fetchReports } from "../stores/actions/report/actionCreator";
-// import { LOADING_SETLOADER, LOADING_UNSETLOADER } from "../stores/actions/loading/actionTypes";
 import { solveReports, fetchReports } from "../stores/actions/report/actionCreator";
 
 export default function TableRowCategories(props) {
@@ -19,6 +17,7 @@ export default function TableRowCategories(props) {
       })
       .then(() => {
         navigate("/reports");
+        swalSuccess(`Report with id ${props.report.id} has solved`);
       });
   };
 

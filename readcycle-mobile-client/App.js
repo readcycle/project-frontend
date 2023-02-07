@@ -15,6 +15,9 @@ import AddPost from "./src/modals/AddPost";
 import AddBid from "./src/modals/AddBid";
 import BidList from "./src/screens/BidList";
 import Map from "./src/screens/Map";
+import Messages from "./src/screens/Messages";
+import Chats from "./src/screens/Chats";
+import Profile from "./src/screens/Profile";
 
 const Stack = createNativeStackNavigator();
 
@@ -27,7 +30,7 @@ export default function App() {
 		<MenuProvider>
 			<NavigationContainer>
 				<Stack.Navigator>
-					{/* <Stack.Screen
+					<Stack.Screen
 						name="Main"
 						component={Main}
 						options={{ headerShown: false }}
@@ -57,16 +60,31 @@ export default function App() {
 						name="BidList"
 						component={BidList}
 						options={{ title: "Bid List" }}
-					/> */}
+					/>
 					<Stack.Screen
 						name="Register"
 						component={Register}
-						options={{ }}
+						options={{ title: "Create new account" }}
 					/>
-          		<Stack.Screen
+					<Stack.Screen
+						name="Profile"
+						component={Profile}
+						options={{}}
+					/>
+					<Stack.Screen
 						name="Map"
 						component={Map}
-						options={{ }}
+						options={{ title: "Pinpoint your location" }}
+					/>
+					<Stack.Screen
+						name="Chats"
+						component={Chats}
+						options={{ title: "" }}
+					/>
+					<Stack.Screen
+						name="Login"
+						component={Login}
+						options={{ title: "" }}
 					/>
 				</Stack.Navigator>
 			</NavigationContainer>

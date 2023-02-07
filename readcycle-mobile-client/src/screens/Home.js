@@ -21,7 +21,6 @@ import {
 	MenuTrigger,
 } from "react-native-popup-menu";
 import { Dropdown } from "react-native-element-dropdown";
-import { BlurView } from "expo-blur";
 
 export default function Home({ navigation }) {
 	const data = [
@@ -136,12 +135,12 @@ export default function Home({ navigation }) {
 			>
 				<View className="flex-row justify-between items-center">
 					<View className="h-20 w-full flex-row justify-start items-center">
-						<View className="h-14 w-14">
+						<TouchableOpacity className="h-14 w-14" onPress={()=> navigation.navigate('Profile')}>
 							<Image
 								source={require("../../assets/portrait-example.jpg")}
 								className="h-full w-full rounded-circular"
 							></Image>
-						</View>
+						</TouchableOpacity>
 					</View>
 					<Menu className="rounded-circular border-1 px-1 py-1 h-5 w-5">
 						<MenuTrigger>

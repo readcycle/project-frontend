@@ -12,6 +12,10 @@ import { useState } from "react";
 
 export default function AddBid() {
 	const [image, setImage] = useState(null);
+	const [title, setTitle] = useState("");
+	const [author, setAuthor] = useState("");
+	const [condition, setCondition] = useState("");
+	const [description, setDescription] = useState("");
 	const handleChoosePhoto = async () => {
 		let result = await ImagePicker.launchImageLibraryAsync({
 			mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -32,6 +36,7 @@ export default function AddBid() {
 					<TextInput
 						className="my-2 h-10 px-4 rounded-lg border-gray-300 border-1"
 						placeholder="Book title"
+						onChangeText={(input) => setTitle(input)}
 					></TextInput>
 				</View>
 				<View className="mt-2">
@@ -39,6 +44,7 @@ export default function AddBid() {
 					<TextInput
 						className="my-2 h-10 px-4 rounded-lg border-gray-300 border-1"
 						placeholder="Book author"
+						onChangeText={(input) => setAuthor(input)}
 					></TextInput>
 				</View>
 				<View className="mt-2">
@@ -46,6 +52,7 @@ export default function AddBid() {
 					<TextInput
 						className="my-2 h-10 px-4 rounded-lg border-gray-300 border-1"
 						placeholder="Book condition"
+						onChangeText={(input) => setCondition(input)}
 					></TextInput>
 				</View>
 				<View className="mt-2">
@@ -54,7 +61,8 @@ export default function AddBid() {
 						multiline={true}
 						numberOfLines={4}
 						className="my-2 h-20 px-4 rounded-lg border-gray-300 border-1"
-						placeholder="Book condition"
+						placeholder="Book description"
+						onChangeText={(input) => setDescription(input)}
 					></TextInput>
 				</View>
 				<View className="mt-8 mx-auto items-center">

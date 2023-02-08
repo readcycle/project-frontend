@@ -7,7 +7,9 @@ import {
 	TextInput,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import * as actions from "../store/action/actionCreator";
 
 export default function AddPost() {
 	const [image, setImage] = useState(null);
@@ -15,6 +17,7 @@ export default function AddPost() {
 	const [author, setAuthor] = useState("");
 	const [condition, setCondition] = useState("");
 	const [description, setDescription] = useState("");
+	const dispatch = useDispatch();
 	const handleChoosePhoto = async () => {
 		let result = await ImagePicker.launchImageLibraryAsync({
 			mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -27,9 +30,12 @@ export default function AddPost() {
 		}
 	};
 
-    const handleSubmit = () => {
-        
-    }
+	const handleSubmit = () => {
+		console.log(image, title, author, condition, description);
+		// dispatch(actions.addPost({
+		// 	image, title, author, condition, description
+		// }))
+	};
 
 	return (
 		<ScrollView className="mx-auto px-8 w-screen">
@@ -47,7 +53,7 @@ export default function AddPost() {
 					<TextInput
 						className="my-2 h-10 px-4 rounded-lg border-gray-300 border-1"
 						placeholder="Book author"
-                        onChangeText={(input) => setAuthor(input)}
+						onChangeText={(input) => setAuthor(input)}
 					></TextInput>
 				</View>
 				<View className="mt-2">
@@ -55,7 +61,8 @@ export default function AddPost() {
 					<TextInput
 						className="my-2 h-10 px-4 rounded-lg border-gray-300 border-1"
 						placeholder="Book condition"
-                        onChangeText={(input) => setCondition(input)}
+						inputMode="numeric"
+						onChangeText={(input) => setCondition(input)}
 					></TextInput>
 				</View>
 				<View className="mt-2">
@@ -65,7 +72,7 @@ export default function AddPost() {
 						numberOfLines={4}
 						className="my-2 h-20 px-4 rounded-lg border-gray-300 border-1"
 						placeholder="description"
-                        onChangeText={(input) => setDescription(input)}
+						onChangeText={(input) => setDescription(input)}
 					></TextInput>
 				</View>
 				{/* <View className="mt-2">
@@ -109,7 +116,10 @@ export default function AddPost() {
             ></TextInput>
         </View> */}
 			</View>
-			<TouchableOpacity className="w-full mt-10 bg-navy rounded-circular py-5 px-4 items-center">
+			<TouchableOpacity
+				className="w-full mt-10 bg-navy rounded-circular py-5 px-4 items-center"
+				onPress={handleSubmit}
+			>
 				<Text className="text-white font-bold uppercase tracking-wider">
 					Post
 				</Text>

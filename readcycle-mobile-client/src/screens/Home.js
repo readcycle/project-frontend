@@ -9,8 +9,10 @@ import {
 	TouchableOpacity,
 	Modal,
 	Pressable,
+	FlatList,
+	ActivityIndicator,
 } from "react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import PostCard from "../components/PostCard";
 import Profile from "./EditProfile";
@@ -21,22 +23,81 @@ import {
 	MenuTrigger,
 } from "react-native-popup-menu";
 import { Dropdown } from "react-native-element-dropdown";
+import { useSelector, useDispatch } from "react-redux";
+import * as actions from "../store/action/actionCreator";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import HeaderHome from "../components/HeaderHome";
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback } from "react";
+
+// let id;
+// let fullname;
 
 export default function Home({ navigation }) {
-	const data = [
-		{ label: "All", value: "" },
-		{ label: "Fantasy", value: "1" },
-		{ label: "Horror", value: "2" },
-		{ label: "Thriller", value: "3" },
-		{ label: "Romance", value: "4" },
-		{ label: "Non-fiction", value: "5" },
-		{ label: "Biography", value: "6" },
-	];
+	const dispatch = useDispatch();
+	const [loading, setLoading] = useState(true);
+	const [fullname, setFullname] = useState("");
+	const [id, setId] = useState(null);
+	const [long, setLong] = useState(null);
+	const [lat, setLat] = useState(null);
+	const [avatar, setAvatar] = useState(null);
+
+	const { user } = useSelector((state) => {
+		return state.user;
+	});
+
+	const { posts } = useSelector((state) => {
+		return state.post;
+	});
+
+	const myPosts = posts.filter((el) => {
+		return el.User.id === id;
+	});
+
+	const genres = useSelector((state) => {
+		return state.genre.genres;
+	});
+
+	useEffect(() => {
+		setAvatar(user.avatar);
+	}, [user]);
+
+	useEffect(() => {
+		setLoading(true);
+		AsyncStorage.getItem("id").then((data) => {
+			setId(data);
+			dispatch(actions.fetchUserDetail(+data));
+		});
+		AsyncStorage.getItem("fullname").then((data) => setFullname(data));
+		AsyncStorage.getItem("long").then((data) => setLong(data));
+		AsyncStorage.getItem("lat").then((data) => setLat(data));
+		dispatch(actions.fetchGenres());
+		dispatch(
+			actions.fetchAllPosts({
+				long: long,
+				lat: lat,
+			})
+		).finally(() => setLoading(false));
+		// .catch((err) => console.log(err));
+		// setLoading(true)
+		// 	.then(() => dispatch(actions.fetchGenres()))
+		// 	.then(() => setLoading(false));
+	}, []);
+
+	useFocusEffect(
+		useCallback(() => {
+			dispatch(
+				actions.fetchAllPosts({
+					long: long,
+					lat: lat,
+				})
+			);
+		}, [])
+	);
 
 	const [modalVisible, setModalVisible] = useState(false);
 
 	const [value, setValue] = useState(null);
-	const [isFocus, setIsFocus] = useState(false);
 	// const renderLabel = () => {
 	// 	if (value || isFocus) {
 	// 		return (
@@ -48,96 +109,100 @@ export default function Home({ navigation }) {
 	// 	return null;
 	// };
 
+	if (loading) return <ActivityIndicator size="large" />;
 	return (
 		<>
-			<TouchableOpacity onPress={() => setModalVisible(false)}>
-				<Modal
-					animationType="slide"
-					transparent={true}
-					visible={modalVisible}
-					onRequestClose={() => {
-						Alert.alert("Modal has been closed.");
-						setModalVisible(!modalVisible);
-					}}
-				>
-					<View style={styles.centeredView}>
-						<View
-							style={styles.modalView}
-							className="w-4/5"
-						>
-							<Text style={styles.modalText}>Search Book</Text>
-							<View className="flex-row items-center w-full bg-gray-100 rounded-circular py-2 px-2">
-								<Ionicons
-									name="search-outline"
-									color="gray"
-									size="16"
-								></Ionicons>
-								<TouchableOpacity
-									onPress={() => {
-										setModalVisible(true);
-									}}
-								>
-									<TextInput className="text-gray-400 ml-4">
-										Search by title
-									</TextInput>
-								</TouchableOpacity>
-							</View>
-							<View className="flex-row w-full b justify-between items-center mt-4 px-2">
-								{/* {renderLabel()} */}
-								<Dropdown
-									className="w-full border-md"
-									data={data}
-									maxHeight={200}
-									maxWidth={800}
-									itemTextStyle={{ fontSize: "14px" }}
-									selectedTextStyle={{ fontSize: "14px" }}
-									labelField="label"
-									valueField="value"
-									value={value}
-									onChange={(item) => {
-										setValue(item.value);
-									}}
-									// renderLeftIcon={() => (
-									// 	<AntDesign
-									// 		style={styles.icon}
-									// 		color={isFocus ? "blue" : "black"}
-									// 		name="Safety"
-									// 		size={20}
-									// 	/>
-									// )}
-								/>
-							</View>
-							<View className="flex-row justify-around w-full">
-								<Pressable
-									className="py-2 px-4 bg-navy rounded-xl mt-6"
-									onPress={() => setModalVisible(false)}
-								>
-									<Text style={styles.textStyle}>Search</Text>
-								</Pressable>
-								<Pressable
-									className="py-2 px-4 bg-white border-1 border-navy rounded-xl mt-6"
-									onPress={() => {
-										setModalVisible(false);
-										setValue("");
-									}}
-								>
-									<Text className="text-navy font-bold">Cancel</Text>
-								</Pressable>
-							</View>
+			<Modal
+				animationType="slide"
+				transparent={true}
+				visible={modalVisible}
+				onRequestClose={() => {
+					Alert.alert("Modal has been closed.");
+					setModalVisible(!modalVisible);
+				}}
+			>
+				<View style={styles.centeredView}>
+					<View
+						style={styles.modalView}
+						className="w-4/5"
+					>
+						<Text style={styles.modalText}>Search Books</Text>
+						<View className="flex-row items-center w-full bg-gray-100 rounded-circular py-2 px-2">
+							<Ionicons
+								name="search-outline"
+								color="gray"
+								size="16"
+							></Ionicons>
+							<TouchableOpacity
+								onPress={() => {
+									setModalVisible(true);
+								}}
+							>
+								<TextInput className="text-gray-400 ml-4">
+									Search by title
+								</TextInput>
+							</TouchableOpacity>
+						</View>
+						<View className="flex-row w-full justify-between items-center mt-4 px-2">
+							{/* {renderLabel()} */}
+							<Dropdown
+								className="w-full border-md"
+								data={genres}
+								maxHeight={200}
+								maxWidth={800}
+								// itemTextStyle={{ fontSize: "14px" }}
+								// selectedTextStyle={{ fontSize: "14px" }}
+								labelField="name"
+								valueField="id"
+								value={value}
+								onChange={(item) => {
+									setValue(item.id);
+								}}
+								// renderLeftIcon={() => (
+								// 	<AntDesign
+								// 		style={styles.icon}
+								// 		color={isFocus ? "blue" : "black"}
+								// 		name="Safety"
+								// 		size={20}
+								// 	/>
+								// )}
+							/>
+						</View>
+						<View className="flex-row justify-around w-full">
+							<Pressable
+								className="py-2 px-4 bg-navy rounded-xl mt-6"
+								onPress={() => setModalVisible(false)}
+							>
+								<Text style={styles.textStyle}>Search</Text>
+							</Pressable>
+							<Pressable
+								className="py-2 px-4 bg-white border-1 border-navy rounded-xl mt-6"
+								onPress={() => {
+									setModalVisible(false);
+									setValue("");
+								}}
+							>
+								<Text className="text-navy font-bold">Cancel</Text>
+							</Pressable>
 						</View>
 					</View>
-				</Modal>
-			</TouchableOpacity>
+				</View>
+			</Modal>
 
-			<ScrollView
+			<View
 				className="h-screen w-full mt-10 px-8"
 				contentContainerStyle={styles.wrapper}
 			>
 				<View className="flex-row justify-between items-center">
 					<View className="h-20 w-full flex-row justify-start items-center">
-						<TouchableOpacity className="h-14 w-14" onPress={()=> navigation.navigate('Profile')}>
+						<TouchableOpacity
+							className="h-14 w-14"
+							onPress={() => navigation.navigate("Profile", { user, myPosts })}
+						>
 							<Image
-								source={require("../../assets/portrait-example.jpg")}
+								source={{
+									uri: avatar,
+								}}
 								className="h-full w-full rounded-circular"
 							></Image>
 						</TouchableOpacity>
@@ -150,14 +215,17 @@ export default function Home({ navigation }) {
 							/>
 						</MenuTrigger>
 						<MenuOptions>
-							<MenuOption text="Logout" />
+							<MenuOption
+								text="Logout"
+								onSelect={() => {
+									AsyncStorage.clear().then(() => navigation.navigate("Login"));
+								}}
+							/>
 						</MenuOptions>
 					</Menu>
 				</View>
 				<View className="w-full my-8">
-					<Text className="text-left text-2xl font-bold">
-						Hello, Chris Pratt!
-					</Text>
+					<Text className="text-left text-2xl font-bold">{fullname}</Text>
 				</View>
 				{/* <DropDownPicker
 					open={open}
@@ -188,11 +256,21 @@ export default function Home({ navigation }) {
 						Books Near You
 					</Text>
 				</View>
-				<View className="w-full mt-4">
-					<PostCard navigation={navigation} />
-					<PostCard navigation={navigation} />
-				</View>
-			</ScrollView>
+				<FlatList
+					className="w-full mt-4"
+					data={posts}
+					renderItem={({ item }) => {
+						return (
+							<PostCard
+								navigation={navigation}
+								item={item}
+							/>
+						);
+					}}
+					keyExtractor={(item) => item.id}
+					// ListHeaderComponent={() => HeaderHome({ navigation, user, posts, genres })}
+				></FlatList>
+			</View>
 
 			<TouchableOpacity
 				className="absolute w-16 h-16 bottom-36 right-8 items-center"

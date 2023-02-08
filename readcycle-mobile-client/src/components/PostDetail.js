@@ -1,7 +1,48 @@
 import { Text, View, ScrollView, Image, TouchableOpacity } from "react-native";
+import { useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function PostDetail({ navigation }) {
+export default function PostDetail({ route, navigation }) {
+	const [id, setId] = useState();
+	const { item } = route.params;
+	const user = item.User;
+	let conditionalButton;
+
+	useEffect(() => {
+		AsyncStorage.getItem("id").then((data) => setId(+data));
+	}, []);
+
+	if (item.UserId !== id) {
+		conditionalButton = (
+			<TouchableOpacity
+				className="border-1 border-navy w-1/4 items-center py-2 px-4 h-3/5 rounded-lg bg-navy"
+				onPress={() => navigation.navigate("AddBid")}
+			>
+				<Text className="text-white font-semibold">Bid</Text>
+			</TouchableOpacity>
+		);
+	} else {
+		conditionalButton = (
+			<>
+				<TouchableOpacity
+					className="border-1 border-navy w-1/4 items-center py-2 px-4 h-3/5 rounded-lg bg-navy"
+					onPress={() =>
+						navigation.navigate("BidList", { item, postId: item.id })
+					}
+				>
+					<Text className="font-semibold text-white">Close</Text>
+				</TouchableOpacity>
+				<TouchableOpacity
+					className="border-1 border-navy w-1/4 h-3/5 py-2 px-4 items-center rounded-lg"
+					onPress={() => navigation.navigate("BidList", { item: item.id })}
+				>
+					<Text className="font-semibold">See bids</Text>
+				</TouchableOpacity>
+			</>
+		);
+	}
 	return (
+		// <Text className="my-auto mx-auto">{JSON.stringify(route.params.item)}</Text>
 		<>
 			<ScrollView
 				className="mt-8 px-8 h-full w-full"
@@ -9,60 +50,59 @@ export default function PostDetail({ navigation }) {
 			>
 				<View className="w-full h-60 bg-white px-4 py-2">
 					<Image
-						source={require("../../assets/post-pic.jpg")}
+						source={{
+							uri: item.imageUrl,
+						}}
 						className="h-full w-full object-contain"
 					/>
 				</View>
 				<View className="flex-row mt-6 px-8 py-2 items-center">
 					<View className="w-full">
-						<Text className="text-left font-bold text-xl">The Whistler</Text>
-						<Text className="text-left text-sm">John Grisham</Text>
+						<Text className="text-left font-bold text-xl">
+							{item.Book.title}
+						</Text>
+						<Text className="text-left text-sm">{item.Book.author}</Text>
 					</View>
 					<View className=" bg-navy justify-center h-10 py-2 px-2 shadow-xl">
-						<Text className="text-white font-bold">Thriller</Text>
+						<Text className="text-white font-bold">{item.Book.Genre.name}</Text>
 					</View>
 				</View>
 				<View className="mt-2 w-full">
-					<Text className="text-left text-xs">Condition: 90%</Text>
-					<Text className="text-left text-xs">Looking for: Any YA book</Text>
-					<Text className="mt-2 text-justify text-xs">
-						Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-						eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-						ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-						aliquip ex ea commodo consequat. Duis aute irure dolor in
-						reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-						pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-						culpa qui officia deserunt mollit anim id est laborum.
-					</Text>
+					<Text className="text-left text-xs">{`Condition: ${item.condition}%`}</Text>
+					<Text className="mt-4 text-justify text-xs">{item.description}</Text>
 				</View>
-				<View className="w-full mt-6 bg-white shadow-lg px-4 py-2 rounded-lg justify-center">
+				<TouchableOpacity
+					className="w-full mt-6 bg-white shadow-lg px-4 py-2 rounded-lg justify-center"
+					onPress={() => {
+						navigation.navigate("OtherProfile", { user, userId: item.UserId });
+					}}
+				>
 					<View className="flex-row justify-between px-4 items-center">
 						<View className="h-14 w-14 items-center rounded-circular mt-2">
 							<Image
-								source={require("../../assets/portrait-example.jpg")}
+								source={{
+									uri: item.User.avatar,
+								}}
 								className="h-full w-full rounded-circular"
 							></Image>
 						</View>
 						<View className="items-start justify-center ml-16 w-1/2">
-							<Text className="font-bold">Albertus Rheza Deniswara</Text>
-							<Text className="">Jakarta</Text>
+							<Text className="font-bold">{item.User.fullname}</Text>
+							<Text className="">{item.User.city}</Text>
 						</View>
 					</View>
-				</View>
+				</TouchableOpacity>
 			</ScrollView>
 			<View className="absolute bottom-4 w-full bg-white h-16 flex-row items-center justify-around">
-				<TouchableOpacity
-					className="border-1 border-navy w-1/4 items-center py-2 px-4 h-3/5 rounded-lg bg-navy"
-					onPress={() => navigation.navigate("AddBid")}
-				>
-					<Text className="text-white font-semibold">Bid</Text>
-				</TouchableOpacity>
-				<TouchableOpacity
+				{conditionalButton}
+				{/* <TouchableOpacity
 					className="border-1 border-navy w-1/4 h-3/5 py-2 px-4 items-center rounded-lg"
-					onPress={() => navigation.navigate("BidList")}
+					onPress={() =>
+						navigation.navigate("BidList", { item, postId: item.id })
+					}
 				>
 					<Text className="font-semibold">See bids</Text>
-				</TouchableOpacity>
+				</TouchableOpacity> */}
 			</View>
 		</>
 	);

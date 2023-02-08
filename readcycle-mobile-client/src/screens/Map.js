@@ -34,7 +34,7 @@ export default function Map({ route, navigation }) {
 			});
 		};
 		getPermission();
-	}, [location]);
+	}, []);
 
 	return (
 		<View style={styles.container}>

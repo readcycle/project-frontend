@@ -1,24 +1,34 @@
 import { ScrollView, Text, FlatList } from "react-native";
 import BidCard from "../components/BidCard";
 import { useEffect } from "react";
-import { fetchAllBids } from "../store/action/actionCreator";
+import { fetchAllBidsByPost } from "../store/action/actionCreator";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function BidList({ route, navigation }) {
 	const { item } = route.params; // ini udah post ID
 	const dispatch = useDispatch();
-	const { bids } = useSelector((state) => state.bid);
+	const bids = useSelector((state) => {
+		return state.bid.bidsByPost;
+	});
 
 	useEffect(() => {
-		console.log(item);
-		dispatch(fetchAllBids(item));
-		console.log(bids);
+		dispatch(fetchAllBidsByPost(item));
 	}, []);
-	// ini tuh item post atau bid
-	// coba pake postman dh, bids?post=
+
+	let content;
+	if (bids) {
+		if (bids.length === 0) {
+			content = (
+				<Text className="my-auto mx-auto">
+					There is no bid yet for this post.
+				</Text>
+			);
+		} else {
+			content = <Text>{JSON.stringify(bids)}</Text>;
+		}
+	}
 
 	return (
-		// <Text>{JSON.stringify(bids)}</Text>
 		<FlatList
 			contentContainerStyle={styles.wrapper}
 			className="w-screen px-4 py-4"

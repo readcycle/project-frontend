@@ -14,11 +14,7 @@ export default function NotificationScreen({ navigation }) {
 	});
 
 	useEffect(() => {
-		dispatch(actions.fetchAllBids()); // ini dia gak refetch
-		// AsyncStorage.getItem("id").then((data) => {
-		// 	setId(+data);
-		// });
-		// console.log(id);
+		dispatch(actions.fetchAllBids()); 
 	}, []);
 
 	const myBids = bids.filter((el) => {

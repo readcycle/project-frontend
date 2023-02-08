@@ -53,7 +53,7 @@ export default function OtherProfile({ route, navigation }) {
 				<MenuOptions customStyles={{ optionsContainer: { width: 100 } }}>
 					<MenuOption
 						text="Report User"
-						onSelect={() => navigation.navigate("EditProfile")}
+						onSelect={() => navigation.navigate("AddReport", {userId})}
 					/>
 				</MenuOptions>
 			</Menu>

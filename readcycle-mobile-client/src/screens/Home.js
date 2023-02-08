@@ -41,6 +41,9 @@ export default function Home({ navigation }) {
 	const [long, setLong] = useState(null);
 	const [lat, setLat] = useState(null);
 	const [avatar, setAvatar] = useState(null);
+	const [search, setSearch] = useState(null);
+	const [value, setValue] = useState(null);
+	const [displayText, setDisplayText] = useState(true);
 
 	const { user } = useSelector((state) => {
 		return state.user;
@@ -50,8 +53,8 @@ export default function Home({ navigation }) {
 		return state.post;
 	});
 
-	const myPosts = posts.filter((el) => {
-		return el.User.id === id;
+	const otherPosts = posts.filter((el) => {
+		return el.UserId !== id;
 	});
 
 	const genres = useSelector((state) => {
@@ -72,12 +75,9 @@ export default function Home({ navigation }) {
 		AsyncStorage.getItem("long").then((data) => setLong(data));
 		AsyncStorage.getItem("lat").then((data) => setLat(data));
 		dispatch(actions.fetchGenres());
-		dispatch(
-			actions.fetchAllPosts({
-				long: long,
-				lat: lat,
-			})
-		).finally(() => setLoading(false));
+		dispatch(actions.fetchAllPosts({ long: long, lat: lat })).finally(() =>
+			setLoading(false)
+		);
 		// .catch((err) => console.log(err));
 		// setLoading(true)
 		// 	.then(() => dispatch(actions.fetchGenres()))
@@ -95,9 +95,20 @@ export default function Home({ navigation }) {
 		}, [])
 	);
 
+	function onSearch() {
+		setDisplayText(false);
+		dispatch(
+			actions.fetchAllPosts({
+				search,
+				genre: value,
+			})
+		);
+		setSearch(null);
+	}
+
 	const [modalVisible, setModalVisible] = useState(false);
 
-	const [value, setValue] = useState(null);
+	// const [value, setValue] = useState(null);
 	// const renderLabel = () => {
 	// 	if (value || isFocus) {
 	// 		return (
@@ -138,9 +149,11 @@ export default function Home({ navigation }) {
 									setModalVisible(true);
 								}}
 							>
-								<TextInput className="text-gray-400 ml-4">
-									Search by title
-								</TextInput>
+								<TextInput
+									className="text-gray-400 ml-4"
+									onChangeText={(input) => setSearch(input)}
+									placeholder="Search by title"
+								></TextInput>
 							</TouchableOpacity>
 						</View>
 						<View className="flex-row w-full justify-between items-center mt-4 px-2">
@@ -171,7 +184,10 @@ export default function Home({ navigation }) {
 						<View className="flex-row justify-around w-full">
 							<Pressable
 								className="py-2 px-4 bg-navy rounded-xl mt-6"
-								onPress={() => setModalVisible(false)}
+								onPress={() => {
+									onSearch();
+									setModalVisible(false);
+								}}
 							>
 								<Text style={styles.textStyle}>Search</Text>
 							</Pressable>
@@ -193,36 +209,50 @@ export default function Home({ navigation }) {
 				className="h-screen w-full mt-10 px-8"
 				contentContainerStyle={styles.wrapper}
 			>
-				<View className="flex-row justify-between items-center">
+				<View className="flex-row justify-around items-center mr-4">
 					<View className="h-20 w-full flex-row justify-start items-center">
 						<TouchableOpacity
 							className="h-14 w-14"
-							onPress={() => navigation.navigate("Profile", { user, myPosts })}
+							onPress={() => navigation.navigate("Profile", { user })}
 						>
 							<Image
-								source={{
-									uri: avatar,
-								}}
+								source={
+									// require('../../assets/Readcycle.png')
+									{ uri: avatar }
+								}
 								className="h-full w-full rounded-circular"
 							></Image>
 						</TouchableOpacity>
 					</View>
-					<Menu className="rounded-circular border-1 px-1 py-1 h-5 w-5">
-						<MenuTrigger>
+					<View className="flex-row justify-start w-1/5 items-center">
+						<TouchableOpacity
+							className="px-1 py-1 mr-4"
+							onPress={() => navigation.navigate("NotificationScreen")}
+						>
 							<Ionicons
-								name="ellipsis-horizontal-outline"
-								size="10"
+								name="notifications-outline"
+								size="20"
 							/>
-						</MenuTrigger>
-						<MenuOptions>
-							<MenuOption
-								text="Logout"
-								onSelect={() => {
-									AsyncStorage.clear().then(() => navigation.navigate("Login"));
-								}}
-							/>
-						</MenuOptions>
-					</Menu>
+						</TouchableOpacity>
+						<Menu className="rounded-circular border-1 px-1 py-1 h-5 w-5">
+							<MenuTrigger text="">
+								<Ionicons
+									name="ellipsis-horizontal-outline"
+									size="10"
+								/>
+							</MenuTrigger>
+							<MenuOptions>
+								<MenuOption
+									text="Logout"
+									onSelect={() => {
+										AsyncStorage.clear().then(() =>
+											navigation.navigate("Login")
+										);
+									}}
+								/>
+							</MenuOptions>
+						</Menu>
+					</View>
 				</View>
 				<View className="w-full my-8">
 					<Text className="text-left text-2xl font-bold">{fullname}</Text>
@@ -235,7 +265,6 @@ export default function Home({ navigation }) {
 					setValue={setValue}
 					setItems={setItems}
 				/> */}
-
 				<View className="flex-row items-center bg-gray-100 w-4/5 rounded-circular ">
 					<Ionicons
 						name="search-outline"
@@ -250,15 +279,18 @@ export default function Home({ navigation }) {
 						<Text className="text-gray-400 ml-4">Search books</Text>
 					</TouchableOpacity>
 				</View>
-
-				<View className="w-full mt-10">
-					<Text className="text-left text-lg font-semibold">
-						Books Near You
-					</Text>
-				</View>
+				{displayText ? (
+					<View className="w-full mt-10">
+						<Text className="text-left text-lg font-semibold">
+							Books Near You
+						</Text>
+					</View>
+				) : (
+					""
+				)}
 				<FlatList
 					className="w-full mt-4"
-					data={posts}
+					data={otherPosts}
 					renderItem={({ item }) => {
 						return (
 							<PostCard

@@ -10,13 +10,26 @@ import * as ImagePicker from "expo-image-picker";
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import * as actions from "../store/action/actionCreator";
+import * as DocumentPicker from "expo-document-picker";
+import { Dropdown } from "react-native-element-dropdown";
 
-export default function AddPost() {
+export default function AddPost({route, navigation}) {
 	const [image, setImage] = useState(null);
 	const [title, setTitle] = useState("");
 	const [author, setAuthor] = useState("");
 	const [condition, setCondition] = useState("");
 	const [description, setDescription] = useState("");
+	const [preview, setPreview] = useState("");
+	const [value, setValue] = useState("");
+
+	const genres = useSelector((state) => {
+		return state.genre.genres;
+	});
+
+	useEffect(() => {
+		dispatch(actions.fetchGenres());
+	}, []);
+
 	const dispatch = useDispatch();
 	const handleChoosePhoto = async () => {
 		let result = await ImagePicker.launchImageLibraryAsync({
@@ -26,15 +39,37 @@ export default function AddPost() {
 			quality: 1,
 		});
 		if (!result.canceled) {
-			setImage(result.assets[0].uri);
+			let uri = result.assets[0].uri;
+			let filename = uri.split("/").pop();
+
+			// Infer the type of the image
+			let match = /\.(\w+)$/.exec(filename);
+			let type = match ? `image/${match[1]}` : `image`;
+
+			// Upload the image using the fetch and FormData APIs
+			let formData = new FormData();
+
+			// Assume "image" is the name of the form field the server expects
+			console.log({ uri, name: filename, type });
+			setImage({ uri, name: filename, type });
+			setPreview(uri);
 		}
 	};
 
 	const handleSubmit = () => {
-		console.log(image, title, author, condition, description);
-		// dispatch(actions.addPost({
-		// 	image, title, author, condition, description
-		// }))
+		let formData = new FormData();
+		formData.append("file", {
+			uri: image.uri,
+			name: image.name,
+			type: image.mimeType,
+		});
+		formData.append("title", title);
+		formData.append("author", author);
+		formData.append("GenreId", value);
+		formData.append("condition", condition);
+		formData.append("description", description);
+		dispatch(actions.addPost(formData));
+		navigation.navigate('Home')
 	};
 
 	return (
@@ -55,6 +90,23 @@ export default function AddPost() {
 						placeholder="Book author"
 						onChangeText={(input) => setAuthor(input)}
 					></TextInput>
+				</View>
+				<View className="mt-2">
+					<Text className="font-semibold">Book genre: </Text>
+					<Dropdown
+						className="w-full border-md border-1 px-4 border-gray-300 rounded-lg my-2"
+						data={genres}
+						maxHeight={200}
+						maxWidth={800}
+						// itemTextStyle={{ fontSize: "14px" }}
+						// selectedTextStyle={{ fontSize: "14px" }}
+						labelField="name"
+						valueField="id"
+						value={value}
+						onChange={(item) => {
+							setValue(item.id);
+						}}
+					/>
 				</View>
 				<View className="mt-2">
 					<Text className="font-semibold">Book condition (%): </Text>
@@ -88,7 +140,7 @@ export default function AddPost() {
 						<Image
 							source={
 								image
-									? { uri: image }
+									? { uri: preview }
 									: require("../../assets/portrait-example.jpg")
 							}
 							className="h-full w-full rounded-circular"

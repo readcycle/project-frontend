@@ -18,16 +18,32 @@ import {
 } from "react-native-popup-menu";
 import { useSelector, useDispatch } from "react-redux";
 import * as actions from "../store/action/actionCreator";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import HeaderProfile from "../components/HeaderProfile";
 import UserBidList from "./UserBidList";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function Profile({ route, navigation }) {
 	const dispatch = useDispatch();
 
-	const { user, myPosts } = route.params;
+	const { user } = route.params;
+
+	const { myPosts } = useSelector((state) => {
+		return state.post;
+	});
 
 	let postContent;
+	console.log(user, "xxx");
+
+	useFocusEffect(
+		useCallback(() => {
+			dispatch(actions.fetchMyPost(user.id));
+		}, [])
+	);
+
+	useEffect(() => {
+		dispatch(actions.fetchMyPost(user.id));
+	}, []);
 
 	// let userContent;
 
@@ -61,6 +77,7 @@ export default function Profile({ route, navigation }) {
 	// 		></ActivityIndicator>
 	// 	);
 	// }
+
 	if (myPosts.length === 0) {
 		postContent = (
 			<View>
@@ -80,7 +97,7 @@ export default function Profile({ route, navigation }) {
 	// }, []);
 
 	return (
-		// <Text>{JSON.stringify(user)}</Text>
+		// <Text>{JSON.stringify(myPosts)}</Text>
 		<View className="w-screen h-screen">
 			<Menu className="rounded-circular border-1 px-1 py-1 h-5 w-5 mt-10 mx-8 self-end">
 				<MenuTrigger>
@@ -93,10 +110,6 @@ export default function Profile({ route, navigation }) {
 					<MenuOption
 						text="Edit Profile"
 						onSelect={() => navigation.navigate("EditProfile", { user })}
-					/>
-					<MenuOption
-						text="Report User"
-						onSelect={() => navigation.navigate("EditProfile")}
 					/>
 					<MenuOption
 						text="Your Bids"
@@ -136,17 +149,17 @@ export default function Profile({ route, navigation }) {
 						<Text className="w-10 text-sm">Active</Text>
 						<TouchableOpacity>
 							<Ionicons
-                            name="trash-outline"
-                            size="16" />
+		                    name="trash-outline"
+		                    size="16" />
 						</TouchableOpacity>
 					</View>
-                    <View className="flex-row justify-between border-b-1 py-2 border-gray-300">
+		            <View className="flex-row justify-between border-b-1 py-2 border-gray-300">
 						<Text className="w-40 text-sm">The Hunger Games</Text>
 						<Text className="w-10 text-sm">Active</Text>
 						<TouchableOpacity>
 							<Ionicons
-                            name="trash-outline"
-                            size="16" />
+		                    name="trash-outline"
+		                    size="16" />
 						</TouchableOpacity>
 					</View>
 				</View> */}

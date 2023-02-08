@@ -1,6 +1,7 @@
 import * as types from "./actionType";
 import axios from "axios";
-const baseUrl = "http://localhost:3000/";
+// const baseUrl = "http://localhost:3000/";
+const baseUrl = "https://429d-103-78-114-23.ap.ngrok.io/";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const fetchGenresSuccess = (payload) => {
@@ -32,17 +33,23 @@ const fetchAllPostsSuccess = (payload) => {
 };
 
 export const fetchAllPosts = (input) => {
-	const { search, genre, user, long, lat, isClosed } = input;
+	// const { search, genre, user, long, lat, isClosed } = input;
 	// console.log(input)
 	let url;
-	if (input) {
-		if (long && lat) {
-			// url = baseUrl + `posts?long=${long}&lat=${lat}`;
-			url =
-				"http://localhost:3000/posts?long=106.843575845017&lat=-6.23922877158625";
-		}
-		if (user) url = baseUrl + `posts?user=${user}`;
+	// const { search, genre, user, long, lat, isClosed } = input;
+	if (input.long && input.lat) {
+		console.log("masuk long lat");
+		// url = baseUrl + `posts?long=${long}&lat=${lat}`;
+		url =
+			"http://localhost:3000/posts?long=106.843575845017&lat=-6.23922877158625";
+	} else if (input.user) {
+		url = baseUrl + `posts?user=${input.user}`;
+	} else if (input.search || input.genre) {
+		if (input.search === null) input.search = "";
+		if (input.genre === null) input.genre = "";
+		url = baseUrl + `posts?search=${input.search}&genre=${input.genre}`;
 	} else {
+		console.log("masuk else");
 		// url = baseUrl + "posts";
 		url =
 			"http://localhost:3000/posts?long=106.843575845017&lat=-6.23922877158625";
@@ -52,6 +59,7 @@ export const fetchAllPosts = (input) => {
 	// console.log(url, 'URL')
 	// http://localhost:3000/posts?long=106.843575845017&lat=-6.23922877158625
 	return (dispatch) => {
+		console.log(url);
 		return fetch(url)
 			.then((response) => response.json())
 			.then((data) => {
@@ -59,6 +67,26 @@ export const fetchAllPosts = (input) => {
 				dispatch(fetchAllPostsSuccess(data));
 			})
 			.catch((error) => console.log(error));
+	};
+};
+
+const fetchMyPostSuccess = (payload) => {
+	return {
+		type: types.FETCH_MY_POSTS,
+		payload,
+	};
+};
+
+export const fetchMyPost = (input) => {
+	return async (dispatch) => {
+		try {
+			const response = await fetch(baseUrl + `posts?user=${input}`);
+			if (!response.ok) throw response.json();
+			const data = await response.json();
+			dispatch(fetchMyPostSuccess(data));
+		} catch (error) {
+			console.log(error);
+		}
 	};
 };
 
@@ -113,6 +141,7 @@ export const loginUser = (input) => {
 				});
 			} else {
 				return response.json().then((data) => {
+					console.log(data);
 					AsyncStorage.setItem("access_token", data.access_token);
 					AsyncStorage.setItem("id", String(data.id));
 					AsyncStorage.setItem("fullname", data.fullname);
@@ -167,26 +196,65 @@ export const fetchPostDetail = (input) => {
 };
 
 export const addPost = (input) => {
-	return (dispatch) => {
-		return fetch(baseUrl + "posts", {
-			method: "POST",
-			headers: {
-				access_token,
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(input),
-		}).then((response) => {
-			console.log(response);
-			if (!response.ok) {
-				return response.json().then((text) => {
-					throw new Error(text.message);
-				});
-			} else {
-				return response.json().then((data) => {
-					return data;
-				});
-			}
-		});
+	return async (dispatch) => {
+		try {
+			const access_token = await AsyncStorage.getItem("access_token");
+			const response = await fetch(baseUrl + "posts", {
+				method: "POST",
+				headers: {
+					access_token,
+					Accept: "application/json",
+					"Content-Type": "multipart/form-data",
+				},
+				body: input,
+			});
+			const data = response.json();
+		} catch (error) {
+			console.log(error);
+		}
+	};
+};
+
+export const addBid = (input) => {
+	console.log(input, "<<<<<");
+	return async (dispatch) => {
+		try {
+			const access_token = await AsyncStorage.getItem("access_token");
+			const response = await fetch(baseUrl + "bids", {
+				method: "POST",
+				headers: {
+					access_token,
+					Accept: "application/json",
+					"Content-Type": "multipart/form-data",
+				},
+				body: input,
+			});
+			const data = response.json();
+			return data;
+		} catch (error) {
+			console.log(error);
+		}
+	};
+};
+
+export const addReport = (input, reportedId) => {
+	console.log(input, reportedId);
+	return async (dispatch) => {
+		try {
+			const access_token = await AsyncStorage.getItem("access_token");
+			const response = await fetch(baseUrl + "reports/" + reportedId, {
+				method: "POST",
+				headers: {
+					access_token,
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(input),
+			});
+			const data = response.json();
+			return data;
+		} catch (error) {
+			console.log(error);
+		}
 	};
 };
 
@@ -254,3 +322,187 @@ export const fetchAllBids = (postId) => {
 			.catch((error) => console.log(error));
 	};
 };
+
+const fetchAllBidsByPostSuccess = (payload) => {
+	return {
+		type: types.FETCH_ALL_BIDS_BY_POST,
+		payload,
+	};
+};
+
+export const fetchAllBidsByPost = (postId) => {
+	let url = baseUrl + `bids`;
+	url += `?post=${postId}`;
+	// console.log(url, "<<<<<")
+	return (dispatch) => {
+		fetch(url)
+			.then((response) => response.json())
+			.then((data) => {
+				// console.log(data, "<<data")
+				dispatch(fetchAllBidsByPostSuccess(data));
+			})
+			.catch((error) => console.log(error));
+	};
+};
+
+export const patchPost = (postId) => {
+	return (dispatch) => {
+		return fetch(baseUrl + "posts/" + postId, {
+			method: "PATCH",
+			headers: {
+				"Content-Type": "application/json",
+			},
+		}).then((response) => {
+			if (!response.ok) {
+				return response.json().then((text) => {
+					throw new Error(text.message);
+				});
+			} else {
+				return response.json().then((data) => {
+					return data;
+				});
+			}
+		});
+	};
+};
+
+import {
+	FETCH_CHAT,
+	CREATE_CHAT,
+	FETCH_CHAT_BY_ID,
+	FETCH_MESSAGE,
+	CREATE_MESSAGE,
+	FETCH_MESSAGE_BY_ID,
+} from "../action/actionType";
+const url = "https://0afa-180-252-39-206.ap.ngrok.io";
+
+//Return Object
+export const fetchChatSuccess = (payload) => {
+	return {
+		type: FETCH_CHAT,
+		payload,
+	};
+};
+
+export const createChatSuccess = (payload) => {
+	return {
+		type: CREATE_CHAT,
+		payload,
+	};
+};
+
+export const fetchChatByIdSuccess = (payload) => {
+	return {
+		type: FETCH_CHAT_BY_ID,
+		payload,
+	};
+};
+export const fetchMessageSuccess = (payload) => {
+	return {
+		type: FETCH_MESSAGE,
+		payload,
+	};
+};
+
+export const createMessageSuccess = (payload) => {
+	return {
+		type: CREATE_MESSAGE,
+		payload,
+	};
+};
+
+export const fetchMessageByIdSuccess = (payload) => {
+	return {
+		type: FETCH_MESSAGE_BY_ID,
+		payload,
+	};
+};
+
+//Function
+
+//chat
+export function fetchChat(id) {
+	console.log(id, "<<<<< cek from action");
+	return (dispatch) => {
+		return fetch(`${url}/chats?id=${id}`)
+			.then((res) => res.json())
+			.then((data) => {
+				console.log(data, "<<<< from store");
+				dispatch(fetchChatSuccess(data));
+			});
+	};
+}
+
+export function createChat(payload) {
+	return (dispatch) => {
+		return fetch(`${url}/chats`, {
+			method: "post",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(payload),
+		})
+			.then((res) => res.json())
+			.then((data) => {
+				console.log(data, "<<< from store");
+				dispatch(createChatSuccess(data));
+			});
+	};
+}
+
+export function fetchChatById(id) {
+	return (dispatch) => {
+		return fetch(`${url}/chats/${id}`, {
+			method: "get",
+		})
+			.then((res) => res.json())
+			.then((data) => {
+				// console.log(data, '<<<< from action');
+				dispatch(fetchChatByIdSuccess(data));
+			});
+	};
+}
+
+//message
+export function fetchMessage(id) {
+	console.log(id, "<<<<< cek from action message");
+	return (dispatch) => {
+		return fetch(`${url}/messages?id=${id}`)
+			.then((res) => res.json())
+			.then((data) => {
+				console.log(data, "<<<< from store");
+				dispatch(fetchMessageSuccess(data));
+			});
+	};
+}
+
+export function createMessage(payload) {
+	console.log(payload, "<<<< from action message");
+	return (dispatch) => {
+		return fetch(`${url}/messages`, {
+			method: "post",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(payload),
+		})
+			.then((res) => res.json())
+			.then((data) => {
+				console.log(data, "<<< from store");
+				dispatch(createMessageSuccess(data));
+			});
+	};
+}
+
+export function fetchMessageById(id) {
+	return (dispatch) => {
+		return fetch(`${url}/messages/${id}`, {
+			method: "get",
+		})
+			.then((res) => res.json())
+			.then((data) => {
+				// console.log(data, '<<<< from action');
+				dispatch(fetchMessageByIdSuccess(data));
+			});
+	};
+}

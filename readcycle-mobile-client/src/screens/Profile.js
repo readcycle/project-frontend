@@ -20,6 +20,7 @@ import { useSelector, useDispatch } from "react-redux";
 import * as actions from "../store/action/actionCreator";
 import { useState, useEffect } from "react";
 import HeaderProfile from "../components/HeaderProfile";
+import UserBidList from "./UserBidList";
 
 export default function Profile({ route, navigation }) {
 	const dispatch = useDispatch();
@@ -27,59 +28,44 @@ export default function Profile({ route, navigation }) {
 	const { user, myPosts } = route.params;
 
 	let postContent;
-	let userContent;
 
-	if (user) {
-		userContent = (
-			<View className="gap-4">
-				<View className="items-center">
-					{user && (
-						<View className="h-28 w-28 items-center rounded-circular border-2 border-dotted">
-							<Image
-								source={{
-									uri: user.avatar,
-								}}
-								className="h-full w-full rounded-circular"
-							></Image>
-						</View>
-					)}
+	// let userContent;
 
-					<View className="justify-around items-center mt-4">
-						<Text className="text-2xl font-bold">{user.fullname}</Text>
-						<Text className="text-sm text-gray-400">{user.city}</Text>
-					</View>
-				</View>
-			</View>
-		);
-	} else {
-		userContent = (
-			<ActivityIndicator
-				size="small"
-				className="my-auto mx-auto"
-			></ActivityIndicator>
-		);
-	}
+	// if (user) {
+	// 	userContent = (
+	// 		<View className="gap-4">
+	// 			<View className="items-center">
+	// 				{user && (
+	// 					<View className="h-28 w-28 items-center rounded-circular border-2 border-dotted">
+	// 						<Image
+	// 							source={{
+	// 								uri: user.avatar,
+	// 							}}
+	// 							className="h-full w-full rounded-circular"
+	// 						></Image>
+	// 					</View>
+	// 				)}
 
+	// 				<View className="justify-around items-center mt-4">
+	// 					<Text className="text-2xl font-bold">{user.fullname}</Text>
+	// 					<Text className="text-sm text-gray-400">{user.city}</Text>
+	// 				</View>
+	// 			</View>
+	// 		</View>
+	// 	);
+	// } else {
+	// 	userContent = (
+	// 		<ActivityIndicator
+	// 			size="small"
+	// 			className="my-auto mx-auto"
+	// 		></ActivityIndicator>
+	// 	);
+	// }
 	if (myPosts.length === 0) {
 		postContent = (
-			<Text className="my-auto mx-auto">You haven't made any post yet.</Text>
-		);
-	} else {
-		postContent = (
-			<FlatList
-				className="w-full mt-4"
-				data={myPosts}
-				renderItem={({ item }) => {
-					return (
-						<PostCard
-							navigation={navigation}
-							item={item}
-						/>
-					);
-				}}
-				keyExtractor={(item) => item.id}
-				ListHeaderComponent={() => HeaderProfile({ user })}
-			/>
+			<View>
+				<Text className="my-auto mx-auto">You haven't made any post yet.</Text>
+			</View>
 		);
 	}
 
@@ -112,6 +98,10 @@ export default function Profile({ route, navigation }) {
 						text="Report User"
 						onSelect={() => navigation.navigate("EditProfile")}
 					/>
+					<MenuOption
+						text="Your Bids"
+						onSelect={() => navigation.navigate("UserBidList", { user })}
+					/>
 				</MenuOptions>
 			</Menu>
 
@@ -134,6 +124,7 @@ export default function Profile({ route, navigation }) {
 						keyExtractor={(item) => item.id}
 						ListHeaderComponent={() => HeaderProfile({ user, navigation })}
 					/>
+					{postContent}
 				</View>
 
 				{/* <PostCard navigation={navigation} /> */}

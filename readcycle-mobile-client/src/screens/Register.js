@@ -11,13 +11,11 @@ import { useState, useEffect } from "react";
 import * as ImagePicker from "expo-image-picker";
 import { useSelector, useDispatch } from "react-redux";
 import * as actions from "../store/action/actionCreator";
-import * as FileSystem from "expo-file-system";
-// import {imageKit} from '../helper/imagekit'
+import * as DocumentPicker from "expo-document-picker";
 
 export default function Register({ route, navigation }) {
 	// console.log(route.params.location);
 	const dispatch = useDispatch();
-
 	const [avatar, setAvatar] = useState(null);
 	const [image, setImage] = useState({});
 	const [page, setPage] = useState(1);
@@ -30,31 +28,26 @@ export default function Register({ route, navigation }) {
 	// 	setLocation(route.params.location);
 	// }
 
+	//langsung aja route.params.location
+
 	function registerHandler() {
-		// imageKit.upload(
-		// 	{
-		// 		file: image,
-		// 		fileName: Date.now() + "-" + ".png",
-		// 		folder: "images_posts",
-		// 	},
-		// 	(err, response) => {
-		// 		if (err) throw { name: "image_not_found" };
-		// 		const imageUrl = imageKit.url({
-		// 			src: response.url,
-		// 			transformation: [
-		// 				{
-		// 					quality: "80",
-		// 					format: "png",
-		// 					focus: "auto",
-		// 				},
-		// 			],
-		// 		});
-		// 		console.log(imageUrl);
-		// 	}
-		// );
-		// dispatch(actions.registerUser())
-		// .then(() => navigate("Login"))
-		// .catch((error) => console.log(error));
+		console.log(image);
+		// const { longitude, latitude } = route.params.location;
+		let formData = new FormData();
+		formData.append("file", {
+			uri: image.uri,
+			name: image.name,
+			type: image.mimeType,
+		  });
+		formData.append("fullname", name);
+		formData.append("email", email);
+		formData.append("password", password);
+		formData.append("city", city);
+		// formData.append("long", longitude);
+		// formData.append("lat", latitude);
+		// console.log(formData)
+
+		dispatch(actions.registerUser(formData));
 	}
 
 	// "location": {"latitude": 37.78825, "longitude": -122.4324}
@@ -66,14 +59,42 @@ export default function Register({ route, navigation }) {
 			aspect: [4, 3],
 			quality: 1,
 		});
-		console.log({ uri: result.assets[0].uri, result:result.assets[0] });
+
+		let uri = result.assets[0].uri;
+		let name = uri.split("/").pop();
+
+		// Infer the type of the image
+		let match = /\.(\w+)$/.exec(name);
+		let type = match ? `image/${match[1]}` : `image`;
 		if (!result.canceled) {
-			// console.log(result.assets[0]);
-			// setImage(result.assets[0].base64);
-			setImage({});
+			setImage({ uri, filename: name, type });
 			setAvatar(result.assets[0].uri);
 		}
 	};
+
+	async function selectFile() {
+		try {
+			//   const result = await checkPermissions();
+
+			//   if (result) {
+			const result = await DocumentPicker.getDocumentAsync({
+				copyToCacheDirectory: false,
+				type: "image/*",
+			});
+
+			if (result.type === "success") {
+				// Printing the log realted to the file
+				console.log("res : " + JSON.stringify(result));
+				// Setting the state to show single file attributes
+				setImage(result);
+			}
+			//   }
+		} catch (err) {
+			setImage(null);
+			console.warn(err);
+			return false;
+		}
+	}
 
 	// useEffect(() => {
 	// 	// if(route.params) {
@@ -203,7 +224,7 @@ export default function Register({ route, navigation }) {
 					<TouchableOpacity
 						className="mt-4 border-1 border-navy px-2 py-1 w-1/2"
 						onPress={() => {
-							navigation.push("Map");
+							navigation.push("Map", { targetPage: "Register" });
 						}}
 					>
 						<Text className="text-center">Set Location</Text>
@@ -218,7 +239,7 @@ export default function Register({ route, navigation }) {
 					<Text className="font-semibold">
 						Finally, upload a profile picture
 					</Text>
-					<View className="h-28 w-28 items-center rounded-circular border-2 border-dotted mt-4">
+					{/* <View className="h-28 w-28 items-center rounded-circular border-2 border-dotted mt-4">
 						<Image
 							source={
 								image
@@ -227,13 +248,18 @@ export default function Register({ route, navigation }) {
 							}
 							className="h-full w-full rounded-circular"
 						/>
-					</View>
+					</View> */}
+
 					<TouchableOpacity
 						className="mt-4 border-1 border-navy px-2 py-1"
-						onPress={handleChoosePhoto}
+						onPress={selectFile}
 					>
 						<Text>Choose picture</Text>
 					</TouchableOpacity>
+
+					{image != null ? (
+						<Text>File Name: {image.name ? image.name : ""}</Text>
+					) : null}
 				</View>
 				<TouchableOpacity
 					onPress={registerHandler}

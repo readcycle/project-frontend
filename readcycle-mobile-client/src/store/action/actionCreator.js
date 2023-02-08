@@ -33,14 +33,22 @@ const fetchAllPostsSuccess = (payload) => {
 
 export const fetchAllPosts = (input) => {
 	const { search, genre, user, long, lat, isClosed } = input;
+	// console.log(input)
 	let url;
 	if (input) {
-		if (long && lat) url = baseUrl + `posts?long=${long}&lat=${lat}`;
+		if (long && lat) {
+			// url = baseUrl + `posts?long=${long}&lat=${lat}`;
+			url =
+				"http://localhost:3000/posts?long=106.843575845017&lat=-6.23922877158625";
+		}
+		if (user) url = baseUrl + `posts?user=${user}`;
 	} else {
-		url = baseUrl + "posts";
+		// url = baseUrl + "posts";
+		url =
+			"http://localhost:3000/posts?long=106.843575845017&lat=-6.23922877158625";
 	}
-	url =
-		"http://localhost:3000/posts?long=106.843575845017&lat=-6.23922877158625";
+	// console.log(url)
+
 	// console.log(url, 'URL')
 	// http://localhost:3000/posts?long=106.843575845017&lat=-6.23922877158625
 	return (dispatch) => {
@@ -70,21 +78,23 @@ export const registerUser = (input) => {
 		return fetch(baseUrl + "users/register", {
 			method: "POST",
 			headers: {
-				"Content-Type": "application/json",
+				Accept: "application/json",
+				"Content-Type": "multipart/form-data",
 			},
-			body: JSON.stringify(input),
-		}).then((response) => {
-			// console.log(response);
-			if (!response.ok) {
-				return response.json().then((text) => {
-					throw new Error(text.message);
-				});
-			} else {
-				return response.json().then((data) => {
-					return data;
-				});
-			}
-		});
+			body: input,
+		})
+			.then((response) => {
+				if (!response.ok) {
+					return response.json().then((text) => {
+						throw new Error(text.message);
+					});
+				} else {
+					return response.json().then((data) => {
+						return data;
+					});
+				}
+			})
+			.catch((err) => console.log(err));
 	};
 };
 
@@ -216,6 +226,7 @@ export const fetchBidsById = (id) => {
 		fetch(baseUrl + `bids?user=${id}`)
 			.then((response) => response.json())
 			.then((data) => {
+				console.log(data);
 				dispatch(fetchBidsByIdSuccess(data));
 			})
 			.catch((error) => console.log(error));
@@ -230,8 +241,8 @@ const fetchAllBidsSuccess = (payload) => {
 };
 
 export const fetchAllBids = (postId) => {
-	let url = baseUrl + `bids`
-	if (postId) url += `?post=${postId}`
+	let url = baseUrl + `bids`;
+	if (postId) url += `?post=${postId}`;
 	// console.log(url, "<<<<<")
 	return (dispatch) => {
 		fetch(url)

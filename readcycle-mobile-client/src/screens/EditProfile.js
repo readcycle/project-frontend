@@ -9,10 +9,10 @@ import {
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { useState } from "react";
-import userReducer from "../store/reducer/userReducer";
 
 export default function EditProfile({ route, navigation }) {
-	const { user } = route.params;
+	console.log(route.params.location)
+	const {user} = route.params
 	const [image, setImage] = useState(null);
 	const [fullname, setFullname] = useState(user.name);
 	const [city, setCity] = useState(user.city);
@@ -120,7 +120,7 @@ export default function EditProfile({ route, navigation }) {
 						<TouchableOpacity
 						className="mt-4 border-1 border-navy px-2 py-1 w-1/2"
 						onPress={() => {
-							navigation.push("Map");
+							navigation.navigate("Map", { targetPage: "EditProfile", user});
 						}}
 					>
 						<Text className="text-center">Set Location</Text>

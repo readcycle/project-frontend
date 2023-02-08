@@ -27,6 +27,8 @@ import { useSelector, useDispatch } from "react-redux";
 import * as actions from "../store/action/actionCreator";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import HeaderHome from "../components/HeaderHome";
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback } from "react";
 
 // let id;
 // let fullname;
@@ -44,14 +46,12 @@ export default function Home({ navigation }) {
 		return state.user;
 	});
 
-	// console.log(user)
-
 	const { posts } = useSelector((state) => {
 		return state.post;
 	});
 
 	const myPosts = posts.filter((el) => {
-		return el.User.id !== id;
+		return el.User.id === id;
 	});
 
 	const genres = useSelector((state) => {
@@ -83,9 +83,17 @@ export default function Home({ navigation }) {
 		// 	.then(() => dispatch(actions.fetchGenres()))
 		// 	.then(() => setLoading(false));
 	}, []);
-	// console.log(genres);
-	// peryssiahaan@gmail.com
-	// perys123
+
+	useFocusEffect(
+		useCallback(() => {
+			dispatch(
+				actions.fetchAllPosts({
+					long: long,
+					lat: lat,
+				})
+			);
+		}, [])
+	);
 
 	const [modalVisible, setModalVisible] = useState(false);
 

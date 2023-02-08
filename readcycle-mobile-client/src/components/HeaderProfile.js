@@ -16,6 +16,13 @@ import {
 } from "react-native-popup-menu";
 
 export default function HeaderProfile({ user, navigation }) {
+
+	let currentTab
+
+	function switchTab() {
+
+	}
+
 	return (
 		<>
 			{/* <Menu className="rounded-circular border-1 px-1 py-1 h-5 w-5 mt-10 mx-8 self-end">
@@ -53,7 +60,13 @@ export default function HeaderProfile({ user, navigation }) {
 					</View>
 				</View>
 			</View>
-			<Text className="text-left text-lg font-semibold mb-4">Your Posts</Text>
+			<View className="flex-row justify-start mt-4">
+				<TouchableOpacity>
+					<Text className="text-left text-lg font-semibold mb-4 mr-8">
+						Posts
+					</Text>
+				</TouchableOpacity>
+			</View>
 		</>
 	);
 }

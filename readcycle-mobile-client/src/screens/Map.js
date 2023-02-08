@@ -1,18 +1,41 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MapView from "react-native-maps";
 import { Marker, Callout, Circle } from "react-native-maps";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-// import GLOBAL from "../GLOBAL";
+import * as Location from "expo-location";
 
-export default function Map({ func, navigation }) {
+export default function Map({ route, navigation }) {
+	const [location, setLocation] = useState();
+
 	const [pin, setPin] = useState({
-		latitude: 37.78825,
-		longitude: -122.4324,
+		latitude: location ? location.coords.latitude : -6.1751,
+		longitude: location ? location.coords.longitude : 106.865,
 	});
-	function submitLocation() {
-		// GLOBAL.location.latitude="abd"
+
+	let user = {};
+	if (route.params.user) {
+		user = route.params.user;
 	}
+
+	const { targetPage } = route.params;
+	useEffect(() => {
+		const getPermission = async () => {
+			let { status } = await Location.requestForegroundPermissionsAsync();
+			if (status !== "granted") {
+				setErrorMessage("Permission to access location was denied");
+			}
+
+			let location = await Location.getCurrentPositionAsync({});
+			setLocation(location);
+			setPin({
+				latitude: location.coords.latitude,
+				longitude: location.coords.longitude,
+			});
+		};
+		getPermission();
+	}, [location]);
+
 	return (
 		<View style={styles.container}>
 			<GooglePlacesAutocomplete
@@ -49,48 +72,48 @@ export default function Map({ func, navigation }) {
 					listView: { backgroundColor: "white" },
 				}}
 			/>
-			<MapView
-				style={styles.map}
-				initialRegion={{
-					latitude: 37.78825,
-					longitude: -122.4324,
-					latitudeDelta: 0.0922,
-					longitudeDelta: 0.0421,
-				}}
-				provider="google"
-			>
-				<Marker
-					coordinate={pin}
-					draggable={true}
-					onDragStart={(e) => {
-						// console.log("Drag start", e.nativeEvent.coordinates);
+			{location && (
+				<MapView
+					style={styles.map}
+					initialRegion={{
+						latitude: pin.latitude,
+						longitude: pin.longitude,
+						latitudeDelta: 0.0922,
+						longitudeDelta: 0.0421,
 					}}
-					onDragEnd={(e) => {
-						setPin({
-							latitude: e.nativeEvent.coordinate.latitude,
-							longitude: e.nativeEvent.coordinate.longitude,
-						});
-					}}
+					provider="google"
 				>
-					<Callout
-						onPress={() => {
-							submitLocation();
-							// navigation.navigate('Register', {
-							//     location: pin
-							// })
-							navigation.goBack({
-								location: pin,
+					<Marker
+						coordinate={pin}
+						draggable={true}
+						onDragStart={(e) => {
+							// console.log("Drag start", e.nativeEvent.coordinates);
+						}}
+						onDragEnd={(e) => {
+							setPin({
+								latitude: e.nativeEvent.coordinate.latitude,
+								longitude: e.nativeEvent.coordinate.longitude,
 							});
 						}}
 					>
-						<Text>Set Location</Text>
-					</Callout>
-				</Marker>
-				<Circle
-					center={pin}
-					radius={1000}
-				/>
-			</MapView>
+						<Callout
+							onPress={() => {
+								// submitLocation();
+								navigation.navigate(targetPage, { location: pin, user });
+								// navigation.goBack({
+								// 	location: pin,
+								// });
+							}}
+						>
+							<Text>Set Location</Text>
+						</Callout>
+					</Marker>
+					<Circle
+						center={pin}
+						radius={1000}
+					/>
+				</MapView>
+			)}
 		</View>
 	);
 }

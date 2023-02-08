@@ -2,12 +2,15 @@ import { StatusBar } from "expo-status-bar";
 import { Text, View, Image, TouchableOpacity, Button } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-export default function PostCard({ navigation, item }) {
+export default function PostCard({ navigation, item, prevPage }) {
 	const navigate = useNavigation();
+	// const { prevPage } = route.params;
 	const onPress = () => {
-		navigate.navigate("PostDetail", {
-			item,
-		});
+		if (prevPage !== "UserBidList") {
+			navigate.navigate("PostDetail", {
+				item,
+			});
+		}
 	};
 
 	return (

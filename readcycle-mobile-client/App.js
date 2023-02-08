@@ -13,10 +13,13 @@ import PostDetail from "./src/components/PostDetail";
 import AddPost from "./src/modals/AddPost";
 import AddBid from "./src/modals/AddBid";
 import BidList from "./src/screens/BidList";
+import AddReport from "./src/modals/AddReport";
+import UserBidList from "./src/screens/UserBidList";
 import Map from "./src/screens/Map";
 import Messages from "./src/screens/Messages";
 import Chats from "./src/screens/Chats";
 import Profile from "./src/screens/Profile";
+import OtherProfile from "./src/screens/OtherProfile";
 import { Provider } from "react-redux";
 import store from "./src/store/index.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -39,22 +42,26 @@ export default function App() {
 							component={Login}
 							options={{ title: "" }}
 						/> */}
-						<Stack.Screen
+						{/* <Stack.Screen
 							name="Main"
 							component={Main}
 							options={{ headerShown: false }}
 						/>
 						<Stack.Screen
+							name="AddReport"
+							component={AddReport}
+							options={{ title: "File New Report", presentation: "modal" }}
+						/> */}
+						<Stack.Screen
 							name="Register"
 							component={Register}
-							options={{ title: "Create new account" }}
+							options={{ title: "Create New Account" }}
 						/>
 						<Stack.Screen
 							name="EditProfile"
 							component={EditProfile}
 							options={{ title: "Edit Profile" }}
 						/>
-
 						<Stack.Screen
 							name="PostDetail"
 							component={PostDetail}
@@ -83,12 +90,20 @@ export default function App() {
 						<Stack.Screen
 							name="Map"
 							component={Map}
-							options={{ title: "Pinpoint your location" }}
+							options={{ title: "Pinpoint Your Location" }}
+						/>
+						<Stack.Screen
+							name="UserBidList"
+							component={UserBidList}
 						/>
 						<Stack.Screen
 							name="Chats"
 							component={Chats}
 							options={{ title: "" }}
+						/>
+						<Stack.Screen
+							name="OtherProfile"
+							component={OtherProfile}
 						/>
 					</Stack.Navigator>
 				</NavigationContainer>

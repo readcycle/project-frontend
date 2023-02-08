@@ -5,13 +5,14 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function PostDetail({ route, navigation }) {
 	const [id, setId] = useState();
 	const { item } = route.params;
+	const user = item.User;
 	let conditionalButton;
 
 	useEffect(() => {
 		AsyncStorage.getItem("id").then((data) => setId(+data));
 	}, []);
 
-	if (item.UserId === id) {
+	if (item.UserId !== id) {
 		conditionalButton = (
 			<TouchableOpacity
 				className="border-1 border-navy w-1/4 items-center py-2 px-4 h-3/5 rounded-lg bg-navy"
@@ -33,9 +34,7 @@ export default function PostDetail({ route, navigation }) {
 				</TouchableOpacity>
 				<TouchableOpacity
 					className="border-1 border-navy w-1/4 h-3/5 py-2 px-4 items-center rounded-lg"
-					onPress={() =>
-						navigation.navigate("BidList", { item: item.id })
-					}
+					onPress={() => navigation.navigate("BidList", { item: item.id })}
 				>
 					<Text className="font-semibold">See bids</Text>
 				</TouchableOpacity>
@@ -72,7 +71,12 @@ export default function PostDetail({ route, navigation }) {
 					<Text className="text-left text-xs">{`Condition: ${item.condition}%`}</Text>
 					<Text className="mt-4 text-justify text-xs">{item.description}</Text>
 				</View>
-				<View className="w-full mt-6 bg-white shadow-lg px-4 py-2 rounded-lg justify-center">
+				<TouchableOpacity
+					className="w-full mt-6 bg-white shadow-lg px-4 py-2 rounded-lg justify-center"
+					onPress={() => {
+						navigation.navigate("OtherProfile", { user, userId: item.UserId });
+					}}
+				>
 					<View className="flex-row justify-between px-4 items-center">
 						<View className="h-14 w-14 items-center rounded-circular mt-2">
 							<Image
@@ -87,7 +91,7 @@ export default function PostDetail({ route, navigation }) {
 							<Text className="">{item.User.city}</Text>
 						</View>
 					</View>
-				</View>
+				</TouchableOpacity>
 			</ScrollView>
 			<View className="absolute bottom-4 w-full bg-white h-16 flex-row items-center justify-around">
 				{conditionalButton}
